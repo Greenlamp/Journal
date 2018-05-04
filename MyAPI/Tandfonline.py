@@ -9,6 +9,7 @@ class Tandfonline:
         self.year = ""
         self.src = ""
         self.url = ""
+        self.articles = None
 
     def set_src(self, src):
         self.src = src
@@ -31,6 +32,8 @@ class Tandfonline:
                 output.write("\n")
                 output.write(obj.year)
                 output.write("\n")
+                #output.write(obj.url)
+                #output.write("\n")
                 output.write(str(obj.src.encode("utf-8")))
                 output.write("\n")
                 output.write("==[END]==")
@@ -53,6 +56,8 @@ class Tandfonline:
                 obj.issue = line
             elif i == 2:
                 obj.year = line
+            #elif i == 3:
+            #    obj.url = line
             else:
                 if line != "==[END]==\n":
                     src += line
@@ -66,3 +71,22 @@ class Tandfonline:
 
         Tandfonline.reinit(objs)
         return objs
+
+    def parse(self):
+        html = self.src
+        #print(html.prettify())
+        volume_year = html.find("div", attrs={"class": u"yearSliderInner"})
+        volume = volume_year.find("span", attrs={"class": u"slider-vol-no"})
+        year = volume_year.find("span", attrs={"class": u"slider-vol-year"})
+        self.year = int(year.text)
+        self.volume = volume.text
+        self.issue = int(html.title.text[-1:])
+        """issue = issue.find("a", attrs={"class": u"open"})
+        print(issue.text)"""
+
+        root = html.find("div", attrs={"class": u"tocContent"})
+        articles = root.find_all("table", attrs={"class": u"articleEntry"})
+        for article in articles:
+            pass
+
+        print(len(articles))
