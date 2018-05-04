@@ -48,10 +48,14 @@ def get_source_tand():
 def main():
     sys.setrecursionlimit(10000)
     #get_source_tand()
-    #pages = Tandfonline.load("tand.dat")
-    pages = Tandfonline.load("single.dat")
-    elm = pages[0]
-    elm.parse()
+    pages = Tandfonline.load("tand.dat")
+    #pages = Tandfonline.load("single.dat")
+    for elm in pages:
+        #elm = pages[3]
+        #elm = pages[0]
+        elm.parse()
+        elm.print()
+        print("===================================")
 
 
 

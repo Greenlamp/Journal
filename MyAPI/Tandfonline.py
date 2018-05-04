@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
 
+from MyAPI.Article import Article
+
 
 class Tandfonline:
     def __init__(self):
@@ -9,7 +11,7 @@ class Tandfonline:
         self.year = ""
         self.src = ""
         self.url = ""
-        self.articles = None
+        self.articles = []
 
     def set_src(self, src):
         self.src = src
@@ -75,7 +77,8 @@ class Tandfonline:
     def parse(self):
         html = self.src
         #print(html.prettify())
-        volume_year = html.find("div", attrs={"class": u"yearSliderInner"})
+        volume_year = html.find("div", attrs={"class": u"yearSlider"})
+        volume_year = volume_year.find("a", attrs={"class": u"expander open"})
         volume = volume_year.find("span", attrs={"class": u"slider-vol-no"})
         year = volume_year.find("span", attrs={"class": u"slider-vol-year"})
         self.year = int(year.text)
@@ -83,10 +86,34 @@ class Tandfonline:
         self.issue = int(html.title.text[-1:])
         """issue = issue.find("a", attrs={"class": u"open"})
         print(issue.text)"""
-
         root = html.find("div", attrs={"class": u"tocContent"})
         articles = root.find_all("table", attrs={"class": u"articleEntry"})
-        for article in articles:
-            pass
 
-        print(len(articles))
+        for elm in articles:
+            try:
+                article = Article()
+                title = elm.find("span", attrs={"class": u"hlFld-Title"})
+                article.title = title.text
+
+                authors = elm.find("span", attrs={"class": u"articleEntryAuthorsLinks"})
+                authors= authors.find_all("a")
+                for author in authors:
+                    article.add_author(author.text)
+
+                date_published = elm.find("div", attrs={"class": u"tocEPubDate"})
+                date_published = date_published.find("span", attrs={"class": u"maintextleft"})
+                date_published = date_published.text.split("Published online: ")[1]
+                article.date_published = date_published
+
+                self.articles.append(article)
+            except:
+                pass
+
+    def print(self):
+        print("Volume: " + self.volume)
+        print("Issue: " + str(self.issue))
+        print("Year: " + str(self.year))
+        print("Articles:")
+        for article in self.articles:
+            print(article.title)
+
