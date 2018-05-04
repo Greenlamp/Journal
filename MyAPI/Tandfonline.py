@@ -93,7 +93,15 @@ class Tandfonline:
             try:
                 article = Article()
                 title = elm.find("span", attrs={"class": u"hlFld-Title"})
-                article.title = title.text
+                article.title = title.text.replace("\\xe2\\x80\\x98", "'")\
+                    .replace("\\xe2\\x80\\x99", "'")\
+                    .replace("\\xe2\\x80\\x93", "-")\
+                    .replace("\\xc2\\xa0", " ")\
+                    .replace("\\xe2\\x80\\x9d", '"')\
+                    .replace("\\xe2\\x80\\x90", "-")\
+                    .replace("\\xe2\\x80\\x94A", "-")\
+                    .replace("\\xe2\\x80\\x94", "-")\
+                    .replace("\\xc2\\xae", "®")
 
                 authors = elm.find("span", attrs={"class": u"articleEntryAuthorsLinks"})
                 authors= authors.find_all("a")
