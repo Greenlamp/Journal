@@ -2,6 +2,8 @@
 import sys
 from dill import dill
 
+from MyAPI.InderScience import InderScience
+from MyAPI.MyBs import MyBs
 from MyAPI.MySele import MySele
 from MyAPI.ScienceDirect import ScienceDirect
 from MyAPI.Tandfonline import Tandfonline
@@ -60,7 +62,49 @@ def create_urls_sd():
     urls.append("https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/16/part/PA")
     urls.append("https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/16/part/PB")
 
-    print(urls)
+    return urls
+
+def create_urls_is():
+    urls = []
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2009&vol=1&issue=1/2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2010&vol=1&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2010&vol=1&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2011&vol=2&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2011&vol=2&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2011&vol=2&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2011&vol=2&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2012&vol=3&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2012&vol=3&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2012&vol=3&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2012&vol=3&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2013&vol=4&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2013&vol=4&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2013&vol=4&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2013&vol=4&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2014&vol=5&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2014&vol=5&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2014&vol=5&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2014&vol=5&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2015&vol=6&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2015&vol=6&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2015&vol=6&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2015&vol=6&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2016&vol=7&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2016&vol=7&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2016&vol=7&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2016&vol=7&issue=4")
+
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2017&vol=8&issue=1")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2017&vol=8&issue=2")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2017&vol=8&issue=3")
+    urls.append("http://www.inderscience.com/info/inarticletoc.php?jcode=ijpee&year=2017&vol=8&issue=4")
 
     return urls
 
@@ -90,30 +134,59 @@ def get_source_sd():
 
     ScienceDirect.save(pages, "sd.dat")
 
+def get_source_is():
+    urls = create_urls_is()
+    bs = MyBs()
+    pages = []
+    print("combien ? " + str(len(urls)))
+    i=0
+    for url in urls:
+        print(str(i) + " / " + str(len(urls)))
+        source = bs.get_source(url)
+        page = InderScience()
+        page.src = source
+        page.url = url
+        pages.append(page)
+        i+=1
+
+    InderScience.save(pages, "is.dat")
+
 def tandfonline():
     sys.setrecursionlimit(10000)
     #get_source_tand()
     pages = Tandfonline.load("tand.dat")
     for elm in pages:
         elm.parse()
-        elm.print()
-        print("===================================")
+
+    return pages
 
 def science_direct():
     sys.setrecursionlimit(10000)
     #get_source_sd()
     pages = ScienceDirect.load("sd.dat")
     for elm in pages:
-    #elm = pages[0]
         elm.parse()
-        elm.print()
-        print("===================================")
+
+    return pages
+
+def inder_science():
+    sys.setrecursionlimit(10000)
+    #get_source_is()
+    pages = InderScience.load("is.dat")
+    for elm in pages:
+        elm.parse()
+
+    return pages
 
 
 
 def main():
-    tandfonline()
-    #science_direct()
+    tand = tandfonline()
+    print("TAND DONE")
+    sd = science_direct()
+    print("SD DONE")
+    _is = inder_science()
+    print("IS DONE")
 
 
 
