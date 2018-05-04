@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from MyAPI.Article import Article
 
 
-class Tandfonline:
+class Tandfonline():
     def __init__(self):
         self.volume = ""
         self.issue = ""
@@ -82,7 +82,7 @@ class Tandfonline:
         volume = volume_year.find("span", attrs={"class": u"slider-vol-no"})
         year = volume_year.find("span", attrs={"class": u"slider-vol-year"})
         self.year = int(year.text)
-        self.volume = volume.text
+        self.volume = volume.text.split(",")[0]
         self.issue = int(html.title.text[-1:])
         """issue = issue.find("a", attrs={"class": u"open"})
         print(issue.text)"""
@@ -93,15 +93,7 @@ class Tandfonline:
             try:
                 article = Article()
                 title = elm.find("span", attrs={"class": u"hlFld-Title"})
-                article.title = title.text.replace("\\xe2\\x80\\x98", "'")\
-                    .replace("\\xe2\\x80\\x99", "'")\
-                    .replace("\\xe2\\x80\\x93", "-")\
-                    .replace("\\xc2\\xa0", " ")\
-                    .replace("\\xe2\\x80\\x9d", '"')\
-                    .replace("\\xe2\\x80\\x90", "-")\
-                    .replace("\\xe2\\x80\\x94A", "-")\
-                    .replace("\\xe2\\x80\\x94", "-")\
-                    .replace("\\xc2\\xae", "®")
+                article.add_title(title.text)
 
                 authors = elm.find("span", attrs={"class": u"articleEntryAuthorsLinks"})
                 authors= authors.find_all("a")
@@ -124,4 +116,20 @@ class Tandfonline:
         print("Articles:")
         for article in self.articles:
             print(article.title)
+
+    def save_to_csv(self, filename):
+        with open(filename, 'a') as output:
+            for article in self.articles:
+                output.write("JEE")
+                output.write(";")
+                output.write(self.volume)
+                output.write(";")
+                output.write(str(self.year))
+                output.write(";")
+                output.write(str(self.issue))
+                output.write(";")
+                output.write(article.title)
+                output.write(";")
+                output.write(article.get_authors())
+                output.write("\n")
 

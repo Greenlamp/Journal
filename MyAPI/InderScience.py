@@ -87,11 +87,11 @@ class InderScience():
             if td is not None:
                 article = Article()
                 title = td.find("a")
-                article.title = title.text
+                article.add_title(title.text)
                 test = td.find_all("br")
                 br = test[0]
                 authors = br.nextSibling
-                article.authors = authors
+                article.authors = authors.split(", ")
                 article.date_published = self.year
 
                 self.articles.append(article)
@@ -106,3 +106,19 @@ class InderScience():
         print("Articles:")
         for article in self.articles:
             print(article.title)
+
+    def save_to_csv(self, filename):
+        with open(filename, 'a') as output:
+            for article in self.articles:
+                output.write("IJPEE")
+                output.write(";")
+                output.write(self.volume)
+                output.write(";")
+                output.write(str(self.year))
+                output.write(";")
+                output.write(str(self.issue))
+                output.write(";")
+                output.write(article.title)
+                output.write(";")
+                output.write(article.get_authors())
+                output.write("\n")

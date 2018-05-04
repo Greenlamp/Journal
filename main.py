@@ -22,6 +22,7 @@ tand = {
 }
 
 sd = {
+    8: 2,
     9: 2,
     10: 2,
     11: 2,
@@ -56,8 +57,9 @@ def create_urls_tand():
 def create_urls_sd():
     urls = []
     for key, value in sd.items():
-        url = "https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/{:d}/issue/{:d}".format(key, value)
-        urls.append(url)
+        for i in range(0, value):
+            url = "https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/{:d}/issue/{:d}".format(key, i+1)
+            urls.append(url)
 
     urls.append("https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/16/part/PA")
     urls.append("https://www.sciencedirect.com/journal/international-review-of-economics-education/vol/16/part/PB")
@@ -187,6 +189,13 @@ def main():
     print("SD DONE")
     _is = inder_science()
     print("IS DONE")
+
+    for page in tand:
+        page.save_to_csv("JEE.csv")
+    for page in sd:
+        page.save_to_csv("IREE.csv")
+    for page in _is:
+        page.save_to_csv("IJPEE.csv")
 
 
 

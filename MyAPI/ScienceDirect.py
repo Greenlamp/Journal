@@ -84,6 +84,12 @@ class ScienceDirect():
             year = year.text.split("(")[1].split(")")[0].split(" ")[1]
             self.year = int(year)
             date = full_date
+            if self.volume == "Issues in Financial Literacy Education":
+                self.volume = "16"
+            elif self.volume == "Volume 16, Part B":
+                self.volume = "16"
+            else:
+                self.volume = self.volume.split("Volume ")[1]
         except:
             volume = html.find("span", attrs={"class": u"text-s js-vol-issue"})
             self.volume = int(volume.text.split(", ")[0].split("Volume ")[1])
@@ -97,7 +103,7 @@ class ScienceDirect():
             article = Article()
 
             title = elm.find("span", attrs={"class": u"js-article-title"})
-            article.title = title.text.replace("\\xe2\\x80\\x98", "'").replace("\\xe2\\x80\\x99", "'").replace("\\xe2\\x80\\x93", "-")
+            article.add_title(title.text)
 
             try:
                 authors = elm.find("div", attrs={"class": u"text-s u-clr-grey8 js-article__item__authors"})
@@ -117,3 +123,21 @@ class ScienceDirect():
         print("Articles:")
         for article in self.articles:
             print(article.title)
+
+    def save_to_csv(self, filename):
+        with open(filename, 'a') as output:
+            for article in self.articles:
+                output.write("IREE")
+                output.write(";")
+                output.write(str(self.volume))
+                output.write(";")
+                output.write(str(self.year))
+                output.write(";")
+                if(self.issue == ''):
+                    self.issue = 1
+                output.write(str(self.issue))
+                output.write(";")
+                output.write(article.title)
+                output.write(";")
+                output.write(article.get_authors())
+                output.write("\n")
